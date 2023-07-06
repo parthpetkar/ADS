@@ -64,8 +64,8 @@ int main()
     {
         printf("1. Insert\n");
         printf("2. Preorder\n");
-        printf("3. Preorder\n");
-        printf("4. Preorder\n");
+        printf("3. Postorder\n");
+        printf("4. Inorder\n");
         printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &ch);
