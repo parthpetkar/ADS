@@ -28,6 +28,17 @@ struct node *insert(struct node *root, int data)
 
     return root;
 }
+
+struct node *search(struct node *root, int data)
+{
+    if (root == NULL || root->data == data)
+        return root;
+
+    if (root->data < data)
+        return search(root->right, data);
+
+    return search(root->left, data);
+}
 void preorderTraversal(struct node *root)
 {
     if (root == NULL)
@@ -66,7 +77,8 @@ int main()
         printf("2. Preorder\n");
         printf("3. Postorder\n");
         printf("4. Inorder\n");
-        printf("5. Exit\n");
+        printf("5. Search\n");
+        printf("6. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &ch);
 
@@ -87,13 +99,25 @@ int main()
             inorderTraversal(root);
             break;
         case 5:
+            printf("Enter element to be searched:");
+            scanf("%d", &item);
+            if (search(root, item) == NULL)
+            {
+                printf("Not Found!!\n");
+            }
+            else
+            {
+                printf("Found\n");
+            }
+            break;
+        case 6:
             printf("Exiting the program.\n");
             break;
         default:
             printf("Invalid choice. Please try again.\n");
             break;
         }
-    } while (ch != 6);
+    } while (ch != 7);
 
     return 0;
 }
