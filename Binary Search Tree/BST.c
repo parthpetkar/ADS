@@ -42,8 +42,8 @@ void postorderTraversal(struct node *root)
     if (root == NULL)
         return;
 
-    preorderTraversal(root->left);
-    preorderTraversal(root->right);
+    postorderTraversal(root->left);
+    postorderTraversal(root->right);
     printf("%d\n", root->data);
 }
 void inorderTraversal(struct node *root)
@@ -51,9 +51,9 @@ void inorderTraversal(struct node *root)
     if (root == NULL)
         return;
 
-    preorderTraversal(root->left);
+    inorderTraversal(root->left);
     printf("%d\n", root->data);
-    preorderTraversal(root->right);
+    inorderTraversal(root->right);
 }
 int main()
 {
