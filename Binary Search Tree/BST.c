@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 // binary search tree
 struct node
 {
@@ -8,7 +9,7 @@ struct node
     struct node *right;
 };
 
-struct node *ptr(int item)
+struct node *createNode(int item)
 {
     struct node *temp = (struct node *)malloc(sizeof(struct node));
     temp->data = item;
@@ -19,7 +20,7 @@ struct node *ptr(int item)
 struct node *insert(struct node *root, int data)
 {
     if (root == NULL)
-        return ptr(data);
+        return createNode(data);
 
     if (data < root->data)
         root->left = insert(root->left, data);
@@ -39,15 +40,17 @@ struct node *search(struct node *root, int data)
 
     return search(root->left, data);
 }
+
 void preorderTraversal(struct node *root)
 {
     if (root == NULL)
         return;
 
-    printf("%d\n", root->data);
+    printf("%d ", root->data);
     preorderTraversal(root->left);
     preorderTraversal(root->right);
 }
+
 void postorderTraversal(struct node *root)
 {
     if (root == NULL)
@@ -55,17 +58,68 @@ void postorderTraversal(struct node *root)
 
     postorderTraversal(root->left);
     postorderTraversal(root->right);
-    printf("%d\n", root->data);
+    printf("%d ", root->data);
 }
+
 void inorderTraversal(struct node *root)
 {
     if (root == NULL)
         return;
 
     inorderTraversal(root->left);
-    printf("%d\n", root->data);
+    printf("%d ", root->data);
     inorderTraversal(root->right);
 }
+
+struct node *deleteNode(struct node *root, int k)
+{
+    if (root == NULL)
+        return root;
+
+    if (k < root->data)
+    {
+        root->left = deleteNode(root->left, k);
+    }
+    else if (k > root->data)
+    {
+        root->right = deleteNode(root->right, k);
+    }
+    else
+    {
+        if (root->left == NULL)
+        {
+            struct node *temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if (root->right == NULL)
+        {
+            struct node *temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        struct node *succParent = root;
+        struct node *succ = root->right;
+
+        while (succ->left != NULL)
+        {
+            succParent = succ;
+            succ = succ->left;
+        }
+
+        if (succParent != root)
+            succParent->left = succ->right;
+        else
+            succParent->right = succ->right;
+
+        root->data = succ->data;
+        free(succ);
+    }
+
+    return root;
+}
+
 int main()
 {
     int ch, item;
@@ -78,7 +132,8 @@ int main()
         printf("3. Postorder\n");
         printf("4. Inorder\n");
         printf("5. Search\n");
-        printf("6. Exit\n");
+        printf("6. Delete\n");
+        printf("7. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &ch);
 
@@ -90,27 +145,38 @@ int main()
             root = insert(root, item);
             break;
         case 2:
+            printf("Preorder Traversal: ");
             preorderTraversal(root);
+            printf("\n");
             break;
         case 3:
+            printf("Postorder Traversal: ");
             postorderTraversal(root);
+            printf("\n");
             break;
         case 4:
+            printf("Inorder Traversal: ");
             inorderTraversal(root);
+            printf("\n");
             break;
         case 5:
-            printf("Enter element to be searched:");
+            printf("Enter element to be searched: ");
             scanf("%d", &item);
             if (search(root, item) == NULL)
             {
-                printf("Not Found!!\n");
+                printf("Not Found!\n");
             }
             else
             {
-                printf("Found\n");
+                printf("Found!\n");
             }
             break;
         case 6:
+            printf("Enter element to be deleted: ");
+            scanf("%d", &item);
+            root = deleteNode(root, item);
+            break;
+        case 7:
             printf("Exiting the program.\n");
             break;
         default:
