@@ -28,15 +28,16 @@ struct node *create()
         scanf("%d", &data);
         temp->data = data;
 
-        printf("Enter left child of the tree: ");
+        printf("\nEnter left child of the tree\n");
         temp->left = create();
 
-        printf("Enter right child of the tree: ");
+        printf("\nEnter right child of the tree: ");
         temp->right = create();
     }
     else
     {
-        printf("Invalid choice!\n");
+        printf("\nInvalid choice!\n");
+        free(temp);
         return NULL;
     }
 
