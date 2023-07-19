@@ -24,6 +24,7 @@ struct node *create()
     }
     else if (ch == 1)
     {
+
         printf("Enter the data: ");
         scanf("%d", &data);
         temp->data = data;
