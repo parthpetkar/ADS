@@ -1,160 +1,256 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include <stdbool.h>
+#include <limits.h>
 
-struct node
+
+typedef struct node
 {
     int data;
-    struct node *left, *right;
-};
+    struct node *left  ;
+    struct node *right ;   
 
-struct node *create()
-{
-    struct node *temp;
-    int data, ch;
-    temp = (struct node *)malloc(sizeof(struct node));
+}node;
 
-    printf("Press 0 to exit\n");
-    printf("Press 1 to create a new node\n");
-    printf("Enter your choice: ");
-    scanf("%d", &ch);
+typedef struct queue{
 
-    if (ch == 0)
-    {
-        return NULL;
-    }
-    else if (ch == 1)
-    {
+    node** arr;
+    int size;
+    int front, rare;
 
-        printf("Enter the data: ");
-        scanf("%d", &data);
-        temp->data = data;
+}queue;
 
-        printf("\nEnter left child of the tree\n");
-        temp->left = create();
-
-        printf("\nEnter right child of the tree: ");
-        temp->right = create();
-    }
-    else
-    {
-        printf("\nInvalid choice!\n");
-        free(temp);
-        return NULL;
-    }
-
-    return temp;
-}
-
-struct QNode
-{
-    struct node *key;
-    struct QNode *next;
-};
-
-struct Queue
-{
-    struct QNode *front, *rear;
-};
-
-struct QNode *newNode(struct node *k)
-{
-    struct QNode *temp = (struct QNode *)malloc(sizeof(struct QNode));
-    temp->key = k;
-    temp->next = NULL;
-    return temp;
-}
-
-struct Queue *createQueue()
-{
-    struct Queue *q = (struct Queue *)malloc(sizeof(struct Queue));
-    q->front = q->rear = NULL;
-    return q;
-}
-
-void enQueue(struct Queue *q, struct node *k)
-{
-    struct QNode *temp = newNode(k);
-
-    if (q->rear == NULL)
-    {
-        q->front = q->rear = temp;
+void enqueue(queue* q, node* root){
+    if(root == NULL){
         return;
     }
-
-    q->rear->next = temp;
-    q->rear = temp;
+    q->arr[q->rare++] = root;
 }
 
-struct node *deQueue(struct Queue *q)
-{
-    if (q->front == NULL)
-        return NULL;
-
-    struct QNode *temp = q->front;
-    struct node *node = temp->key;
-
-    q->front = q->front->next;
-
-    if (q->front == NULL)
-        q->rear = NULL;
-
-    free(temp);
-    return node;
+int dequeue(queue*q){
+    int a = (q->arr[q->front])->data;
+    q->front++;
+    return a;
 }
 
-void levelOrderTraversal(struct node *root)
-{
+node* SearchNode(node *root, int parent_data){
+
+    queue* q = (queue*)malloc(sizeof(queue));
+    q->arr = (node*)malloc(sizeof(node)*20);
+    q->size = 20;
+    q->front = 0;
+    q->rare = 0;
+
+    enqueue(q,root);
+    while(q->front != q->rare){
+
+        node* current = q->arr[q->front];
+        if(current->data == parent_data){
+            return current;
+        }
+        enqueue(q, current->left);
+        enqueue(q, current->right);
+        q->front++;
+    }
+
+    printf("\nInvalid Parent Entered\n");
+    return root;
+}
+
+node* create(node* root, int data){
+
+    node *x = (node*) malloc (sizeof(node));
+    x->data = data;
+    x->left = x->right = NULL;
+    root = x;
+    return root;
+}
+
+node* insert (node *root, int parent, int data, char pos) {
+
+        node *x = (node*) malloc (sizeof(node));
+        x->data = data;
+        x->left = x->right = NULL;
+
+    node* temp = SearchNode(root,parent);
+    if(pos == 'L' && !temp->left){
+        temp->left = x;
+    }
+    else if(pos == 'R' && !temp->right){
+        temp->right = x;
+    }
+    else{
+        printf("\nKey already exists\n");
+    }
+    return root;
+}
+
+void LevelOrderTraversal(node* root){
+
+    queue* q = (queue*)malloc(sizeof(queue));
+    q->arr = (node*)malloc(sizeof(node)*20);
+    q->size = 20;
+    q->front = 0;
+    q->rare = 0;
+
+    enqueue(q,root);
+    while(q->front != q->rare){
+
+        node* current = q->arr[q->front];
+        enqueue(q, current->left);
+        enqueue(q, current->right);
+        printf("%d ", dequeue(q));
+    }
+}
+
+int maxfunc(int a, int b){
+    if(a>b)
+        return a;
+    else 
+        return b;
+}
+
+int maxHeight(node* root){
+
+    //base case
+    if (root == NULL){
+        return 0;
+    }
+    //recursive case
+    int leftDepth = maxHeight(root->left);
+    int rightDepth = maxHeight(root->right);
+
+    return maxfunc(leftDepth, rightDepth)+1;
+}
+
+void MirrorImage(node *root){
+
+    if (root != NULL)
+    {  
+        node* temp;
+        MirrorImage(root->left);      
+        MirrorImage(root->right);     
+        temp = root->left;
+        root->left  = root->right;   
+        root->right = temp;
+    }
+}
+
+bool isMirror(node* leftSubtree, node* rightSubtree) {
+
+    if (leftSubtree == NULL && rightSubtree == NULL)
+        return true;
+    if (leftSubtree == NULL || rightSubtree == NULL)
+        return false;
+
+    return (leftSubtree->data == rightSubtree->data) && isMirror(leftSubtree->left, rightSubtree->right) && 
+            isMirror(leftSubtree->right, rightSubtree->left);
+}
+
+bool isSymmetric(node* root) {
     if (root == NULL)
+        return true;
+
+    return isMirror(root->left, root->right);
+}
+
+
+bool isBSTUntil(node* root, int min, int max) {
+    if (root == NULL)
+        return true;
+
+    if (root->data < min || root->data > max)
+        return false;
+
+    return isBSTUntil(root->left, min, root->data - 1) &&
+           isBSTUntil(root->right, root->data + 1, max);
+}
+
+bool isBST(node* root) {
+    return isBSTUntil(root, INT_MIN, INT_MAX);
+}
+
+void printLeafNodes(node* root){
+    
+    if(root!=NULL){
+        if(!(root->left) && !(root->right)){
+            printf("%d ",root->data);
+            return ;
+        }
+        if(root->left)
+            printLeafNodes(root->left);
+        if(root->right)
+            printLeafNodes(root->right);
         return;
-
-    struct Queue *q = createQueue();
-    enQueue(q, root);
-
-    while (q->front != NULL)
-    {
-        struct node *node = deQueue(q);
-        printf("%d ", node->data);
-
-        if (node->left != NULL)
-            enQueue(q, node->left);
-
-        if (node->right != NULL)
-            enQueue(q, node->right);
     }
 }
 
-int main()
-{
-    struct node *root = NULL;
-    int choice;
+int main() {
 
-    do
-    {
-        printf("\n----- Menu -----\n");
-        printf("1. Create Binary Tree\n");
-        printf("2. Perform Level Order Traversal\n");
-        printf("3. Exit\n");
-        printf("Enter your choice: ");
+    node *root = NULL;
+    int parent; 
+    int n;
+    char position;
+    int choice = 1;
+    int data;
+
+    do {
+
+        printf("What do you want to do:\n 1. Create Tree\n 2. Insert node\n 3. LevelOrder Traversal\n 4. Height \n 5. Mirror Image \n");
+        printf(" 6. Check Symmetricity \n 7. Check BST \n 8. Print leaf nodes \n");
+        scanf("%d", &n);
+
+        switch(n) {
+            case 1:
+                printf("Enter the data of the root of the tree\n");
+                scanf("%d", &data);
+                root = create(root, data);
+                break;
+            case 2:
+                printf("Enter the data, it's parent and whether it is left(L) or right(R) child\n");
+                scanf("%d", &data);
+                fflush(stdin);
+                scanf("%d", &parent);
+                fflush(stdin);
+                scanf("%c", &position);
+                root = insert(root, parent, data, position);
+                break;
+
+            case 3:
+                LevelOrderTraversal(root);
+                break;
+            case 4:
+                printf("The depth of the tree is : %d\n",maxHeight(root));
+                break;
+            case 5:
+                printf("The Mirror Image of the Tree is \n");
+                MirrorImage(root);
+                LevelOrderTraversal(root);
+                break;
+            case 6:
+                if(isSymmetric(root)){
+                    printf("\nTHE TREE IS SYMMETRIC\n");
+                }
+                else{
+                    printf("\nTHE TREE IS NOT SYMMETRIC\n");
+                }
+                break;
+              case 7:
+                if(isBST(root))
+                    printf("\n The given tree is a BST\n");
+                else
+                    printf("\n The given tree is not a BST\n");
+                break;
+            case 8:
+                printf("\nThe Leaf Nodes are : ");
+                printLeafNodes(root);
+                printf("\n");
+                break;
+        }   
+        printf("\nDo you want to continue? (1 for Yes, 0 for No): ");
         scanf("%d", &choice);
 
-        switch (choice)
-        {
-        case 1:
-            root = create();
-            break;
-        case 2:
-            printf("Level Order Traversal: ");
-            levelOrderTraversal(root);
-            printf("\n");
-            break;
-        case 3:
-            printf("Exiting the program.\n");
-            break;
-        default:
-            printf("Invalid choice. Please try again.\n");
-            break;
-        }
-    } while (choice != 3);
-
+    } while(choice);
+    
     return 0;
 }
