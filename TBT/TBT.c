@@ -13,7 +13,7 @@ struct node *TBTcreate(struct node *head, char key)
 {
     struct node *temp = (struct node *)malloc(sizeof(struct node));
     head->lbit = head->rbit = 0;
-    head->right = head->left = NULL;
+    head->right = head->left = head;
     temp->data = key;
     if (head->left == head)
     {
@@ -21,6 +21,7 @@ struct node *TBTcreate(struct node *head, char key)
         temp->right = head;
         head->left = temp;
         head->lbit = 1;
+        return head;
     }
     else
     {
