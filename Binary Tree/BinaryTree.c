@@ -4,39 +4,39 @@
 #include <limits.h>
 
 
-typedef struct node
+ struct node
 {
     int data;
     struct node *left  ;
     struct node *right ;   
 
-}node;
+};
 
-typedef struct queue{
+ struct queue{
 
-    node** arr;
+    struct node** arr;
     int size;
     int front, rare;
 
-}queue;
+};
 
-void enqueue(queue* q, node* root){
+void enqueue(struct queue* q,struct node* root){
     if(root == NULL){
         return;
     }
     q->arr[q->rare++] = root;
 }
 
-int dequeue(queue*q){
+int dequeue(struct queue*q){
     int a = (q->arr[q->front])->data;
     q->front++;
     return a;
 }
 
-node* SearchNode(node *root, int parent_data){
+struct node* SearchNode(struct node *root, int parent_data){
 
-    queue* q = (queue*)malloc(sizeof(queue));
-    q->arr = (node*)malloc(sizeof(node)*20);
+    struct queue* q = (struct queue*)malloc(sizeof(queue));
+    q->arr = (struct node*)malloc(sizeof(node)*20);
     q->size = 20;
     q->front = 0;
     q->rare = 0;
@@ -44,7 +44,7 @@ node* SearchNode(node *root, int parent_data){
     enqueue(q,root);
     while(q->front != q->rare){
 
-        node* current = q->arr[q->front];
+        struct node* current = q->arr[q->front];
         if(current->data == parent_data){
             return current;
         }
@@ -57,22 +57,22 @@ node* SearchNode(node *root, int parent_data){
     return root;
 }
 
-node* create(node* root, int data){
+struct node* create(node* root, int data){
 
-    node *x = (node*) malloc (sizeof(node));
+    struct node *x = (struct node*) malloc (sizeof(node));
     x->data = data;
     x->left = x->right = NULL;
     root = x;
     return root;
 }
 
-node* insert (node *root, int parent, int data, char pos) {
+struct node* insert (struct node *root, int parent, int data, char pos) {
 
-        node *x = (node*) malloc (sizeof(node));
+        struct node *x = (struct node*) malloc (sizeof(node));
         x->data = data;
         x->left = x->right = NULL;
 
-    node* temp = SearchNode(root,parent);
+    struct node* temp = SearchNode(root,parent);
     if(pos == 'L' && !temp->left){
         temp->left = x;
     }
@@ -85,10 +85,10 @@ node* insert (node *root, int parent, int data, char pos) {
     return root;
 }
 
-void LevelOrderTraversal(node* root){
+void LevelOrderTraversal(struct node* root){
 
-    queue* q = (queue*)malloc(sizeof(queue));
-    q->arr = (node*)malloc(sizeof(node)*20);
+    struct queue* q = (struct queue*)malloc(sizeof(queue));
+    q->arr = (struct node*)malloc(sizeof(node)*20);
     q->size = 20;
     q->front = 0;
     q->rare = 0;
@@ -96,7 +96,7 @@ void LevelOrderTraversal(node* root){
     enqueue(q,root);
     while(q->front != q->rare){
 
-        node* current = q->arr[q->front];
+       struct node* current = q->arr[q->front];
         enqueue(q, current->left);
         enqueue(q, current->right);
         printf("%d ", dequeue(q));
@@ -110,7 +110,7 @@ int maxfunc(int a, int b){
         return b;
 }
 
-int maxHeight(node* root){
+int maxHeight(struct node* root){
 
     //base case
     if (root == NULL){
@@ -127,7 +127,7 @@ void MirrorImage(node *root){
 
     if (root != NULL)
     {  
-        node* temp;
+        struct node* temp;
         MirrorImage(root->left);      
         MirrorImage(root->right);     
         temp = root->left;
@@ -136,7 +136,7 @@ void MirrorImage(node *root){
     }
 }
 
-bool isMirror(node* leftSubtree, node* rightSubtree) {
+bool isMirror(struct node* leftSubtree,struct node* rightSubtree) {
 
     if (leftSubtree == NULL && rightSubtree == NULL)
         return true;
@@ -147,7 +147,7 @@ bool isMirror(node* leftSubtree, node* rightSubtree) {
             isMirror(leftSubtree->right, rightSubtree->left);
 }
 
-bool isSymmetric(node* root) {
+bool isSymmetric(struct node* root) {
     if (root == NULL)
         return true;
 
@@ -155,7 +155,7 @@ bool isSymmetric(node* root) {
 }
 
 
-bool isBSTUntil(node* root, int min, int max) {
+bool isBSTUntil(struct node* root, int min, int max) {
     if (root == NULL)
         return true;
 
@@ -166,11 +166,11 @@ bool isBSTUntil(node* root, int min, int max) {
            isBSTUntil(root->right, root->data + 1, max);
 }
 
-bool isBST(node* root) {
+bool isBST(struct node* root) {
     return isBSTUntil(root, INT_MIN, INT_MAX);
 }
 
-void printLeafNodes(node* root){
+void printLeafNodes(struct node* root){
     
     if(root!=NULL){
         if(!(root->left) && !(root->right)){
@@ -187,7 +187,7 @@ void printLeafNodes(node* root){
 
 int main() {
 
-    node *root = NULL;
+    struct node *root = NULL;
     int parent; 
     int n;
     char position;

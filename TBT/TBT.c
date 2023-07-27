@@ -1,152 +1,126 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
-struct node
-{
-    char data;
-    bool lbit, rbit;
-    struct node *left, *right;
+struct TreeNode {
+    int key;
+    struct TreeNode* left;
+    struct TreeNode* right;
+    int isThreaded;
 };
 
-struct node *TBTcreate(struct node *head, char key)
-{
-    struct node *temp = (struct node *)malloc(sizeof(struct node));
-    head->lbit = head->rbit = 0;
-    head->right = head->left = head;
-    temp->data = key;
-    if (head->left == head)
-    {
-        temp->left = head;
-        temp->right = head;
-        head->left = temp;
-        head->lbit = 1;
-        return head;
-    }
-    else
-    {
-        struct node *p = head->left;
-        while (1)
-        {
-            if (key < p->data && p->lbit == 1)
-            {
-                p = p->left;
-            }
-            else if (key > p->data && p->rbit == 1)
-            {
-                p = p->right;
-            }
-            else
-            {
+struct TreeNode* createNode(int key) {
+    struct TreeNode* newNode = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    newNode->key = key;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    newNode->isThreaded = 1; 
+    return newNode;
+}
+
+void insert(struct TreeNode** root, int key) {
+    struct TreeNode* new_node = createNode(key);
+    if (*root == NULL) {
+        *root = new_node;
+    } else {
+        struct TreeNode* current = *root;
+        while (1) {
+            if (key < current->key) {
+                if (current->left) {
+                    current = current->left;
+                } else {
+                    current->left = new_node;
+                    new_node->right = current;
+                    new_node->isThreaded = 1;
+                    break;
+                }
+            } else if (key > current->key) {
+                if (current->isThreaded) {
+                    new_node->right = current->right;
+                    new_node->isThreaded = 1;
+                    current->right = new_node;
+                    current->isThreaded = 0;
+                }
+                current = current->right;
+            } else {
                 break;
             }
         }
-        if (key > p->data)
-        {
-            temp->right = p->right;
-            temp->left = p;
-            p->right = temp;
-            p->rbit = 1;
-        }
-        else
-        {
-            temp->left = p->left;
-            temp->right = p;
-            p->left = temp;
-            p->lbit = 1;
-        }
     }
-    return head;
 }
 
-void inorder(struct node *root)
-{
-    if (root == NULL)
-        return;
-
-    struct node *current = root->left;
-    while (current != root)
-    {
-        while (current->lbit == 1)
+void inorder(struct TreeNode* root) {
+    struct TreeNode* current = root;
+    while (current) {
+        while (current->left) {
             current = current->left;
-
-        printf("%c ", current->data);
-
-        while (current->rbit == 0)
-        {
-            current = current->right;
-            if (current == root)
-                return;
-            printf("%c ", current->data);
         }
+        printf("%d ", current->key);
 
-        current = current->right;
+        if (current->isThreaded) {
+            current = current->right;
+        } else {
+            current = current->right;
+            while (current && !current->isThreaded) {
+                current = current->left;
+            }
+        }
     }
 }
 
-void preorder(struct node *root)
-{
-    if (root == NULL)
-        return;
+void preorder(struct TreeNode* root) {
+    struct TreeNode* current = root;
+    while (current) {
+        printf("%d ", current->key);
 
-    struct node *current = root->left;
-    while (current != root)
-    {
-        printf("%c ", current->data);
-
-        while (current->lbit == 1)
-        {
+        if (current->left) {
             current = current->left;
-            printf("%c ", current->data);
-        }
-
-        while (current->rbit == 0)
+        } else if (current->isThreaded) {
             current = current->right;
-
-        current = current->right;
+        } else {
+            current = current->right;
+            while (current && !current->isThreaded) {
+                current = current->left;
+            }
+        }
     }
 }
 
-int main()
-{
-    int choice;
-    char num;
-    struct node *root = (struct node *)malloc(sizeof(struct node));
-    root->lbit = root->rbit = 1;
-    root->left = root->right = root;
+int main() {
+    struct TreeNode* root = NULL;
+    int choice, key;
 
-    do
-    {
-        printf("\nProgram of Threaded Tree in C\n");
-        printf("1.Insert\n");
-        printf("2.Inorder Traversal\n");
-        printf("3.Preorder Traversal\n");
-        printf("4.Quit\n");
-        printf("\nEnter your choice : ");
+    while (1) {
+        printf("\nBinary Search Tree Menu:\n");
+        printf("1. Insert a key\n");
+        printf("2. Inorder Traversal\n");
+        printf("3. Preorder Traversal\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
         scanf("%d", &choice);
-        switch (choice)
-        {
-        case 1:
-            printf("\nEnter the character to be inserted : ");
-            scanf(" %c", &num);
-            root = TBTcreate(root, num);
-            break;
-        case 2:
-            printf("\nInorder Traversal: ");
-            inorder(root);
-            printf("\n");
-            break;
-        case 3:
-            printf("\nPreorder Traversal: ");
-            preorder(root);
-            printf("\n");
-            break;
-        case 4:
-            exit(0);
-        default:
-            printf("\nWrong choice\n");
-        }
-    } while (choice != 4);
 
+        switch (choice) {
+            case 1:
+                printf("Enter the key to insert: ");
+                scanf("%d", &key);
+                insert(&root, key);
+                printf("Key %d inserted into the BST.\n", key);
+                break;
+            case 2:
+                printf("Inorder Traversal: ");
+                inorder(root);
+                printf("\n");
+                break;
+            case 3:
+                printf("Preorder Traversal: ");
+                preorder(root);
+                printf("\n");
+                break;
+            case 4:
+                printf("Exiting the program...\n");
+                exit(0);
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
     return 0;
 }
