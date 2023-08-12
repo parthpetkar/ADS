@@ -16,7 +16,7 @@ ThreadedTreeNode *createThreadedNode(int data) {
     newNode->left = NULL;
     newNode->right = NULL;
     newNode->isThreadedRight = 0;
-    return newNode;
+    return newNode; 
 }
 
 ThreadedTreeNode *insert(ThreadedTreeNode *root, int data) {
