@@ -65,7 +65,7 @@ void BFSTraversal(int i)
     q.f = q.r = 0;
     q.arr = (int *)malloc(q.size * sizeof(int));
 
-    int size = sizeof(visited_bfs) / sizeof(int);
+    int size = sizeof(visited_bfs) / sizeof(int);   
 
     printf("%d ", i + 1);
     visited_bfs[i] = 1;
