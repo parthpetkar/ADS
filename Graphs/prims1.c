@@ -56,7 +56,6 @@ void main()
                     }
 
         if (visited[u] == 0 || visited[v] == 0)
-
         {
 
             printf("\nEdge %d:(%d %d) cost:%d", ne++, a, b, min);

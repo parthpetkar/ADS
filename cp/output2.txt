@@ -1,0 +1,24 @@
+
+
+4 - Operation Code Error
+IC=2, IR=PA10, C=0, R=, TTL=4, TTC=2, TLL=1, LLC=0
+
+
+5 - Operand Error
+IC=4, IR=SR7ATO, C=0, R=TO, TTL=20, TTC=5, TLL=10, LLC=0
+
+
+6 - Invalid Page Fault
+IC=2, IR=LR36, C=0, R=, TTL=7, TTC=3, TLL=2, LLC=0
+
+
+1 - Out of Data
+IC=1, IR=GD30, C=0, R=, TTL=50, TTC=2, TLL=8, LLC=0
+*    
+*   *   
+*   *   *   
+*   *   
+
+
+2 - Line Limit Exceeded
+IC=15, IR=PD60*   , C=0, R=*   , TTL=25, TTC=19, TLL=4, LLC=4
